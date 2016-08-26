@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Kviz prestolnic</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <h1>Uganite glavno mesto države!</h1>
+    
+    <p>Katero je glavno mesto države <span>{{ country }}</span></p>
+    <img src="{{ picture }}"/>
+    
+    <form method="post" action="/" autocomplete="off">
+        <input name="vnos" placeholder="Vpiši mesto"><br>
+        <button type="submit">Odgovori</button>
+    </form>
+    
+    <div class="result">
+        {% if sporocilo %}
+            <p>Odgovor je: {{ sporocilo }}</p>
+        {% else %}
+            <p>Odgovor je: </p>
+        {% endif %}
+    </div>
+    
+</body>
+</html>
