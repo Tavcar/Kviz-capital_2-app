@@ -28,57 +28,39 @@ class BaseHandler(webapp2.RequestHandler):
         template = jinja_env.get_template(view_filename)
         return self.response.out.write(template.render(params))
 
-
 class Country(object):
     def __init__(self, name, capital, image):
         self.name = name
         self.capital = capital
         self.image = image
 
-"""def main():
-    drzave_file = open("drzave.txt", "w")
+def random_country(drzave_list):
+    nakljucna_drzava = random.choice(drzave_list)
+    return nakljucna_drzava
 
-    drzave_list = []
-
-    for item in drzave_file:
-        name, capital, image = item.split(";")
-
-        country = Country(name=name, capital=capital, image=image)
-        drzave_list.append(country)
-"""
-
-def RandomCountry(drzave_list):
-    a = random.choice(drzave_list)
-    return a
-
-drzave = [Country("Slovenija", "Ljubljana",
-                  "http://www.hotelcubo.com/wp-content/uploads/2014/09/Ljubljana_Jeseni%C4%8Dnik.jpg"),
-          Country("Hrvaska", "Zagreb",
-                  "http://www.travelandleisure.com/sites/default/files/styles/tnl_redesign_article_landing_page/public/1448052729/zagreb-croatia-WTG0116.jpg?itok=IIpWCtBo"),
-          Country("Avstrija", "Dunaj",
-                  "http://www.austria.info/media/17083/thumbnails/stadtansicht-wien--oesterreich-werbung-julius-silver--d.jpg.3146497.jpg")]
-
-b = RandomCountry(drzave)
-a = b
+def country_list():
+    drzave = [Country("Slovenija", "Ljubljana",
+                      "http://www.hotelcubo.com/wp-content/uploads/2014/09/Ljubljana_Jeseni%C4%8Dnik.jpg"),
+              Country("Hrvaska", "Zagreb",
+                      "http://www.travelandleisure.com/sites/default/files/styles/tnl_redesign_article_landing_page/public/1448052729/zagreb-croatia-WTG0116.jpg?itok=IIpWCtBo"),
+              Country("Avstrija", "Dunaj",
+                      "http://www.austria.info/media/17083/thumbnails/stadtansicht-wien--oesterreich-werbung-julius-silver--d.jpg.3146497.jpg")]
+    return drzave
 
 class MainHandler(BaseHandler):
     def get(self):
-
-        params = {"picture": b.image, "country": b.name}
+        nakljucna = random_country(country_list())
+        params = {"picture": nakljucna.image, "country": nakljucna.name}
         return self.render_template("kviz.html", params=params)
 
     def post(self):
         ugibanje = self.request.get("vnos")
-
-        if ugibanje.lower() == a.capital.lower():
-            a = RandomCountry(drzave)
-            global a
-            sporocilo = {"sporocilo": "Pravilen!", "picture": a.image, "country": a.name}
+        naslednje = self.request.get("country")
+        if ugibanje.lower() == naslednje.capital.lower():
+            sporocilo = {"sporocilo": "Pravilen!", "picture": naslednje.image, "country": naslednje.name}
             return self.render_template("kviz.html",params=sporocilo)
         else:
-            a = RandomCountry(drzave)
-            global a
-            sporocilo = {"sporocilo": "Napacen", "picture": a.image, "country": a.name}
+            sporocilo = {"sporocilo": "Napacen", "picture": naslednje.image, "country": naslednje.name}
             return self.render_template("kviz.html",params=sporocilo)
 
 app = webapp2.WSGIApplication([
